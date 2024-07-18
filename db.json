@@ -1,0 +1,18 @@
+{
+  "logs": [
+    {
+      "id": 1,
+      "message": "change hard drive on ws 004",
+      "attention": false,
+      "date": "03-02-2019",
+      "tech": "Sam Smith"
+    }
+  ],
+  "techs": [
+    {
+      "id": 1,
+      "firstName": "Sam",
+      "lastName": "Smith"
+    }
+  ]
+}
