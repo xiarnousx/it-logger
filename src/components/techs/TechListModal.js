@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { TechItem } from "./TechItem";
+import { deleteTechs, getTechs } from "../../actions/techActions";
 
-export const TechListModal = () => {
-  const [techs, setTechs] = useState([]);
-  const [loading, setLoading] = useState(false);
+const TechListModal = ({ tech: { techs, loading }, getTechs, deleteTechs }) => {
 
-  const getTechs = async () => {
-    setLoading(true);
-    const res = await fetch("/techs");
-    const data = await res.json();
-    setTechs(data);
-    setLoading(false);
-  };
 
   useEffect(() => {
     getTechs();
@@ -31,13 +24,13 @@ export const TechListModal = () => {
       <div className="modal-content">
         <h4>Techs List</h4>
         <ul className="collection">
-          {!loading && techs.length === 0 && (
+          {!loading && techs && techs.length === 0 && (
             <li>
               <p className="center">No Techs</p>
             </li>
           )}
-          {!loading &&
-            techs.map((tech) => <TechItem key={tech.id} tech={tech} />)}
+          {!loading && techs &&
+            techs.map((tech) => <TechItem key={tech.id} tech={tech} deleteTechs={deleteTechs} />)}
         </ul>
       </div>
     </div>
@@ -48,3 +41,9 @@ const modalStyle = {
   width: "75%",
   height: "75%",
 };
+
+const mapStateToProps = state => ({
+  tech: state.tech,
+})
+
+export default connect(mapStateToProps, { getTechs, deleteTechs })(TechListModal)

@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { LogItem } from "./LogItem";
 import { Loader } from "../layout/Loader";
-export const Logs = () => {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const getLogs = async () => {
-    setLoading(true);
-    const res = await fetch("/logs");
-    const data = await res.json();
-    setLogs(data);
-    setLoading(false);
-  };
+import { deleteLog, getLogs, setCurrent } from "../../actions/logsActions";
+
+const Logs = ({ log: { logs, loading }, getLogs, deleteLog, setCurrent }) => {
 
   useEffect(() => {
     getLogs();
@@ -31,7 +25,13 @@ export const Logs = () => {
           <p className="center">No Logs</p>
         </li>
       )}
-      {!loading && logs.map((log) => <LogItem key={log.id} log={log} />)}
+      {!loading && logs.map((log) => <LogItem key={log.id} log={log} deleteLog={deleteLog} setCurrent={setCurrent} />)}
     </ul>
   );
 };
+
+const mapStateToProps = state => ({
+  log: state.log,
+})
+
+export default connect(mapStateToProps, { getLogs, deleteLog, setCurrent })(Logs);

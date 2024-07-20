@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import M from "materialize-css/dist/js/materialize.min.js";
-export const EditLogModal = () => {
+import { clearCurrent, updateLog } from "../../actions/logsActions";
+import TechSelectOptions from "../techs/TechSelectOptions";
+
+const EditLogModal = ({ log, updateLog, clearCurrent }) => {
   const [message, setMessage] = useState("");
   const [attention, setAttention] = useState(false);
   const [tech, setTech] = useState("");
 
+  useEffect(() => {
+    if (log !== null) {
+      setMessage(log.message);
+      setAttention(log.attention);
+      setTech(log.tech);
+    }
+  }, [log])
+
   const onSubmit = () => {
     if (message.trim() === "" || tech.trim() === "")
       return M.toast({ html: "Please Enter a message and tech" });
-
+    updateLog({
+      id: log.id,
+      message,
+      attention,
+      tech,
+      date: new Date()
+    })
     setMessage("");
     setTech("");
     setAttention(false);
+    clearCurrent();
   };
 
   return (
@@ -39,12 +58,7 @@ export const EditLogModal = () => {
               className="browser-default"
               onChange={(e) => setTech(e.target.value)}
             >
-              <option value="" disabled>
-                Select Tech
-              </option>
-              <option value="John Doe">John Doe</option>
-              <option value="Sam Smith">Sam Smith</option>
-              <option value="Sara Wilson">Sara Wilson</option>
+              <TechSelectOptions />
             </select>
           </div>
         </div>
@@ -80,3 +94,9 @@ const modalStyle = {
   width: "75%",
   height: "75%",
 };
+
+const mapStateToProps = (state) => ({
+  log: state.log.current
+})
+
+export default connect(mapStateToProps, { updateLog, clearCurrent })(EditLogModal)

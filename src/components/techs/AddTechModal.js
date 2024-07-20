@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import M from "materialize-css/dist/js/materialize.min.js";
-export const AddTechModal = () => {
+import { addTech } from "../../actions/techActions";
+const AddTechModal = ({ addTech }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
   const onSubmit = () => {
     if (firstName.trim() === "" || lastName.trim() === "")
       return M.toast({ html: "Please Enter a message and tech" });
-
+    addTech({ firstName, lastName })
     setFirstName("");
     setLastName("");
   };
@@ -60,3 +62,10 @@ const modalStyle = {
   width: "75%",
   height: "75%",
 };
+
+
+const mapStateToProps = (state) => ({
+
+});
+
+export default connect(mapStateToProps, { addTech })(AddTechModal)
